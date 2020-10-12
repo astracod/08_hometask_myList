@@ -3,14 +3,16 @@ package com.company.my_list;
 
 import java.util.Iterator;
 
-public class MyLinkedList<T> implements Iterable<T> {
+public class MyLinkedList<T> implements Iterable<T>, DescendingIterator<T> {
 
     private ListItem<T> head = null;
     private ListItem<T> tail = null;
     private int len = 0;
 
+
     /**
-     *  Метод добавления элемента списка
+     * Метод добавления элемента списка
+     *
      * @param value
      */
     public void addListItem(T value) {
@@ -20,17 +22,48 @@ public class MyLinkedList<T> implements Iterable<T> {
             head = tail = elem;
         } else {
             tail.setNext(elem);
+            elem.prev = tail;
             tail = elem;
         }
     }
 
     /**
-     *  Метод удаления элемента списка
+     * Метод добавления элемента по индексу
+     */
+
+    public void addByIndex(T value, int index) {
+        ListItem<T> elem = head;
+        int c = 0;
+
+        while (elem != null && c != index) {
+            elem = elem.getNext();
+            c++;
+        }
+        ListItem<T> current = new ListItem<>(value);
+        if (c == 0) {
+            head.setPrev(current);
+            current.setNext(head);
+            head = current;
+        } else if (c == len - 1) {
+            tail.setNext(current);
+            current.setPrev(tail);
+            tail = current;
+        } else {
+            elem.getPrev().setNext(current);
+            current.setPrev(elem.getPrev());
+            elem.setPrev(current);
+            current.setNext(elem);
+        }
+    }
+
+    /**
+     * Метод удаления элемента списка
+     *
      * @param index
      */
     public void remoteElem(int index) {
         ListItem<T> current = head;
-        for (int i = 0; i <= index && current != null ; i++, current = current.getNext()) {
+        for (int i = 0; i <= index && current != null; i++, current = current.getNext()) {
             if (index == 0) head = current.getNext();
             if (i == index - 1) {
                 current.setNext(current.getNext().getNext());
@@ -42,7 +75,8 @@ public class MyLinkedList<T> implements Iterable<T> {
     }
 
     /**
-     *  Метод изьятия отдельного элемента списка
+     * Метод изьятия отдельного элемента списка
+     *
      * @param index
      * @return
      */
@@ -59,6 +93,49 @@ public class MyLinkedList<T> implements Iterable<T> {
 
     public int size() {
         return len;
+    }
+
+
+    /**
+     * класс-обект List
+     *
+     * @param <T>
+     */
+    private static class ListItem<T> {
+        private T value;
+        private ListItem<T> next = null;
+        private ListItem<T> prev = null;
+
+
+        public ListItem(T value) {
+            this.value = value;
+        }
+
+        public T getValue() {
+            return value;
+        }
+
+        public void setValue(T value) {
+            this.value = value;
+        }
+
+
+        public ListItem getNext() {
+            return next;
+        }
+
+        public void setNext(ListItem<T> next) {
+            this.next = next;
+        }
+
+
+        public ListItem getPrev() {
+            return prev;
+        }
+
+        public void setPrev(ListItem<T> prev) {
+            this.prev = prev;
+        }
     }
 
     /**
@@ -87,35 +164,6 @@ public class MyLinkedList<T> implements Iterable<T> {
         }
     }
 
-    /**
-     * класс-обект List
-     *
-     * @param <T>
-     */
-    private static class ListItem<T> {
-        private T value;
-        private ListItem<T> next = null;
-
-        public ListItem(T value) {
-            this.value = value;
-        }
-
-        public T getValue() {
-            return value;
-        }
-
-        public void setValue(T value) {
-            this.value = value;
-        }
-
-        public ListItem getNext() {
-            return next;
-        }
-
-        public void setNext(ListItem<T> next) {
-            this.next = next;
-        }
-    }
 
     /**
      * переопределенный метод iterator() , интерфейса Iterable
@@ -127,10 +175,40 @@ public class MyLinkedList<T> implements Iterable<T> {
         return new ListIterator<>(head);
     }
 
-    // создать свой итератор шагающий назад, вывод через ваил. Для него потребуется свой класс.
+    /**
+     * класс реализации обратного вывода
+     *
+     * @param <T>
+     */
+    private static class ListDescendingIterator<T> implements Iterator<T> {
 
+        private ListItem<T> current;
+
+        public ListDescendingIterator(ListItem<T> current) {
+            this.current = current;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return current != null;
+        }
+
+        @Override
+        public T next() {
+            ListItem<T> elem = current;
+            current = current.getPrev();
+            return elem.getValue();
+        }
+    }
+
+    /**
+     * метод обратного вывода
+     *
+     * @return
+     */
+    @Override
     public Iterator<T> descendingIterator() {
-        return null;
+        return new ListDescendingIterator<>(tail);
     }
 
 }
