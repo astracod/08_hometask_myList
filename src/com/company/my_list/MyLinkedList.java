@@ -56,11 +56,19 @@ public class MyLinkedList<T> implements Iterable<T>, DescendingIterator<T> {
         }
     }
 
+    /**
+     * Метод замены значения по индексу
+     * @param value
+     * @param index
+     */
     public void replaceValueByIndex( T value,int index){
         ListItem<T> elem =head;
         for (int i = 0; i <= index && elem != null ; i++, elem = elem.getNext()) {
             if (i == index -1){
                 elem.setValue(value);
+            }
+            if (index > len){
+                throw new IndexOutOfBoundsException();
             }
         }
     }
