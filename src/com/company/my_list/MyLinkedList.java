@@ -56,6 +56,15 @@ public class MyLinkedList<T> implements Iterable<T>, DescendingIterator<T> {
         }
     }
 
+    public void replaceValueByIndex( T value,int index){
+        ListItem<T> elem =head;
+        for (int i = 0; i <= index && elem != null ; i++, elem = elem.getNext()) {
+            if (i == index -1){
+                elem.setValue(value);
+            }
+        }
+    }
+
     /**
      * Метод удаления элемента списка
      *

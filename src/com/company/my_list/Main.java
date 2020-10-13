@@ -40,5 +40,10 @@ public class Main {
         while (iterator.hasNext()) {
             System.out.println(iterator.next());
         }
+        System.out.println("<-------------| Замена значения по индексу : |---------------->");
+        list.replaceValueByIndex(40,5);
+        for (Integer elem : list){
+            System.out.println(elem);
+        }
     }
 }
